@@ -35,17 +35,13 @@ import turnManager from './tm.js'
         const map = scene.make.tilemap(config)
         const tileset = map.addTilesetImage('colored', 'tiles', this.tileSize, this.tileSize, 0, 1)
         this.map = map.createLayer(0, tileset, 0, 0)  
-        /**
-         * make cursor for use when attacking
-         * could possibly use it for deciding 
-         * where to move.  That was the original
-         * idea anyways.....Make it so!
-         */
- 
-         
-        
+             
     },
 
+    /**
+     * yup basic collision detecttion... or just the  can i walk there?
+     * Sure you can.  Just watch out for traps!
+     */
     isWalkableTile: function (x,y) {
         let allEntities = [...turnManager.entities]
         for (let e = 0; e < allEntities.length; e++){
@@ -56,6 +52,12 @@ import turnManager from './tm.js'
         let tileAtDestination = dungeon.map.getTileAt(x,y)
         return true !== dungeon.sprites.wall
     },
+    /**
+     * is there something in my way?  is it good or bad ?
+     * Can I kill it?  yeah that's basically what this is for
+     * use it to see if something is there for attack and
+     * so you don't try to occupy the same space
+     */
     entityAtTile: function (x, y) {
         let allEntities = [...turnManager.entities]
         for (let e = 0; e < allEntities.length; e++ ) {
@@ -67,6 +69,13 @@ import turnManager from './tm.js'
         return false
     },
 
+    /**
+     * entity died.  You or monster
+     * remove it from the entity list so it
+     * no longer gets a turn, but for some reason
+     * it will still attack the player if they are dead and gone
+     * gotta fix that to!
+     */
     removeEntity: function(entity) {
         turnManager.entities.delete(entity)
         entity.sprite.destroy()

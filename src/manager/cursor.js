@@ -1,6 +1,13 @@
 import phaser from '../lib/phaser.js'
 import dungeon from './dm.js'
 
+      /**
+         * cursor for use when attacking
+         * and where to move.  That was the original
+         * idea anyways.....Make it so!  I call in
+         * game.js to create dungeon.cursorSprite
+         */
+ 
 export default class CursorSprite {
         constructor(){
         this.x = -100
