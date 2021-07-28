@@ -11,11 +11,14 @@ import Phaser from '../lib/phaser.js'
 import room1 from '../maps/level.js'
 import turnManager from './tm.js'
 
-let dungeon = {
+    let dungeon = {
     sprites: {
         floor: 0,
-        wall: 554,
+        wall: 1,
+        cursorYellow: 4,
+        cursorRed: 5,
     },
+
     tileSize: 16,
 
     initialize: function (scene) {
@@ -31,9 +34,15 @@ let dungeon = {
 
         const map = scene.make.tilemap(config)
         const tileset = map.addTilesetImage('colored', 'tiles', this.tileSize, this.tileSize, 0, 1)
-        this.map = map.createLayer(0, tileset, 0, 0)
-        
-        this.map.setCollisionByProperty({collides: true})
+        this.map = map.createLayer(0, tileset, 0, 0)  
+        /**
+         * make cursor for use when attacking
+         * could possibly use it for deciding 
+         * where to move.  That was the original
+         * idea anyways.....Make it so!
+         */
+ 
+         
         
     },
 
@@ -45,7 +54,7 @@ let dungeon = {
             { return false}
         }
         let tileAtDestination = dungeon.map.getTileAt(x,y)
-        return tileAtDestination.index !== dungeon.sprites.wall
+        return true !== dungeon.sprites.wall
     },
     entityAtTile: function (x, y) {
         let allEntities = [...turnManager.entities]
@@ -77,7 +86,7 @@ let dungeon = {
         this.scene.tweens.add({
             targets: entity.sprite,
             onComplete: () => {
-                entity.moving = false
+                if(entity.type === 'foe') {entity.moving = false}
                 entity.x = x
                 entity.y = y
             },

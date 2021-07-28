@@ -10,7 +10,7 @@ export default class BasicMonster {
         this.x = x
         this.y = y
         this.actions = 1
-        this.tile = 26
+        this.tile = 3
         this.hp =  15
         this.type = 'foe'
         this.initiative = initiative()

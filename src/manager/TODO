@@ -1,0 +1,26 @@
+--- TODO ---
+
+look into creating blank layer
+!!! make spritesheet from png + my sprites
+look back into collision detection for walls and players (monsters to!)
+
+
+
+************************************
+so how do we change the turn manager?
+
+would like to update and see if we can use the delayedCall() to slow
+down the time for it.  Could I use the loop in the turn manager for turn
+to loop through the entities and on a player entitycreate a loop to to wait for
+user input?  then dalyedCall with a callback to their personal turn call based 
+off of what key is pressed.  or I could implement that in the turnmanager away 
+from the update()
+
+
+************************************
+createblank layer to use personal sprites on
+
+I will still need to make a personalized spritesheet from the icon on the kenney.nl
+sheet and add mine to that.  allowing me to call them since you can only load one 
+spritesheet to a map.  unless you use tiled and layers in tiled to load multiple 
+spritesheets.

@@ -8,12 +8,11 @@ import Phaser from '../lib/phaser.js'
  */
 
 const turnManager = {
-
     entities: new Set(),
     addEntity: (entity) => turnManager.entities.add(entity),
     removeEntity: (entity) => {
         turnManager.entities.delete(entity)
-        
+
     },
     refresh: () => {
         turnManager.entities.forEach(e => e.refresh())
@@ -21,16 +20,21 @@ const turnManager = {
     },
     currentIndex: 0,
     turn: () => {
-        if (turnManager.entities.size > 0) {
-            let entities = [...turnManager.entities]
-            let e = entities[turnManager.currentIndex]
-            entities.sort((a, b) => a.initiative - b.initiative)
-            if (!e.over()) {
-                e.turn()
-            } else {
+        
+            if (turnManager.entities.size > 0) {
+                let entities = [...turnManager.entities]
+                let e = entities[turnManager.currentIndex]
+                entities.sort((a, b) => a.initiative - b.initiative)
+                if (!e.over()) {
+                    e.turn()
+                }
+                else{
                 turnManager.currentIndex++
+                }
+                
+
             }
-        }
+        
     },
     over: () => [...turnManager.entities].every(e => e.over()),
 

@@ -1,10 +1,12 @@
 import Phaser from './lib/phaser.js'
 import Game from './scenes/Game.js'
+import Hud from './scenes/hud.js'
+
 
 export default new Phaser.Game({
     type: Phaser.AUTO,
-    width: 80* 16,
-    height: 50 * 16,
+    width: 800,
+    height: 600,
     pixelArt: true,
     zoom: 1,
     scene: Game,
@@ -15,5 +17,6 @@ export default new Phaser.Game({
                 y: 0
             },
         }
-    }
+    },
+    fps: {forceSetTimeOut: true},
 })
