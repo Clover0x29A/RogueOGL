@@ -1,13 +1,14 @@
-import dungeon from "./dm.js"
+import dungeon from './dm.js'
 import {
     initiative
-} from "./randoms.js"
-import MoveManager from "./mm.js"
+} from './randoms.js'
+import MoveManager from './mm.js'
+import UI from '../scenes/ui.js'
 
 export default class PlayerCharacter {
 
-    constructor(x, y) {
-        this.name = 'player'
+    constructor(x, y, name) {
+        this.name = name
         this.movePoints = 5
         this.actions = 1
         this.cursors = dungeon.scene.input.keyboard.createCursorKeys()
@@ -23,10 +24,14 @@ export default class PlayerCharacter {
         this.tileHighlight = 7
         this.hp = 10
         this.type = 'friend'
+        this.class = 'Fighter'
+        this.race = 'Dwarf'
         this.moving = false
         this.acting = false
+        this.weapon = 'sword'
+        this.weaponRange = 1
+        this.weaponDmg = 6
         this.moveManager = new MoveManager
-        this.doOnce = true
         this.initiative = initiative()
         dungeon.initializeEntity(this)
     }
@@ -49,35 +54,46 @@ export default class PlayerCharacter {
 
     turn() {
         if (!this.turnStarted) {
-            this.moveManager.setupMoveInfo(this)
+            this.createUI()
             this.sprite.setFrame(this.tileHighlight)
             this.turnStarted = true
-        }
-
-        if(this.attackBtn.isDown){
-
-        }
-        
-        if (this.moveBtn.isDown) {
-            if (this.moving) {
-                this.confirmMove()
-                return
-            }
-            this.moveManager.setupMoveInfo(this)
             dungeon.cursorSprite.x = this.x
             dungeon.cursorSprite.y = this.y
-            dungeon.moveEntityTo(dungeon.cursorSprite, dungeon.cursorSprite.x + 1, dungeon.cursorSprite.y)
-            dungeon.cursorSprite.sprite.hidden = false
+            dungeon.moveEntityTo(dungeon.cursorSprite, this.x, this.y)
+        }
+        if(this.attackBtn.isDown){
+            if(this.actions === 0) { return }
+            
+            if(this.acting) {
+                this.confirm()
+                return
+            }
+            this.acting = true
+            this.moveManager.setupMoveInfo(this, false)
+            dungeon.cursorSprite.sprite.visible = true
+        }
+
+        if (this.moveBtn.isDown) {
+            if(this.movePoints === 0){ return }
+            //dungeon.scene.input.keyboard.resetKeys()
+            if (this.moving) {
+                this.confirm()
+                return
+            }
             this.moving = true
+            this.moveManager.setupMoveInfo(this, true)
+            dungeon.cursorSprite.sprite.visible = true
         }
         if (this.cancelBtn.isDown) {
-            if (this.moving) {
-                this.cancelMove()
+            //dungeon.scene.input.keyboard.resetKeys()
+            if (this.moving || this.acting) {
+                this.cancel()
             }
         }
         if (this.confirmBtn.isDown) {
-            if (this.moving) {
-                this.confirmMove()
+            //dungeon.scene.input.keyboard.resetKeys()
+            if (this.moving || this.acting) {
+                this.confirm()
             }
         }
         if (this.endTurnBtn.isDown) {
@@ -87,21 +103,29 @@ export default class PlayerCharacter {
                 this.sprite.setFrame(this.tile)
             }
         }
-        if (this.moving) {
+        if (this.moving || this.acting) {
             let currentX = dungeon.cursorSprite.x
             let currentY = dungeon.cursorSprite.y
 
             if (this.cursors.left.isDown) {
                 if (currentX - 1 >= this.moveManager.validXFloor ) {
                     currentX -= 1
+                    if(this.moving){
                     dungeon.cursorSprite.sprite.setFrame(!dungeon.isWalkableTile(currentX, currentY)?dungeon.sprites.cursorRed: dungeon.sprites.cursorYellow)
+                    } else{
+                        dungeon.cursorSprite.sprite.setFrame(!dungeon.isWalkableTile(currentX, currentY)?dungeon.sprites.cursorYellow: dungeon.sprites.cursorRed)
+                    }
                     dungeon.moveEntityTo(dungeon.cursorSprite, currentX, currentY)
                 }
-            }
+            } 
             if (this.cursors.right.isDown) {
                 if (currentX + 1 <= this.moveManager.validXCeil) {
                     currentX += 1
-                    dungeon.cursorSprite.sprite.setFrame(!dungeon.isWalkableTile(currentX, currentY)?dungeon.sprites.cursorRed: dungeon.sprites.cursorYellow)
+                    if(this.moving){
+                        dungeon.cursorSprite.sprite.setFrame(!dungeon.isWalkableTile(currentX, currentY)?dungeon.sprites.cursorRed: dungeon.sprites.cursorYellow)
+                        } else{
+                            dungeon.cursorSprite.sprite.setFrame(!dungeon.isWalkableTile(currentX, currentY)?dungeon.sprites.cursorYellow: dungeon.sprites.cursorRed)
+                        }
                     dungeon.moveEntityTo(dungeon.cursorSprite, currentX, currentY)
                 }
             }
@@ -109,40 +133,52 @@ export default class PlayerCharacter {
             if (this.cursors.up.isDown) {
                 if (currentY - 1 >= this.moveManager.validYFloor ) {
                     currentY -= 1
-                    dungeon.cursorSprite.sprite.setFrame(!dungeon.isWalkableTile(currentX, currentY)?dungeon.sprites.cursorRed: dungeon.sprites.cursorYellow)
+                    if(this.moving){
+                        dungeon.cursorSprite.sprite.setFrame(!dungeon.isWalkableTile(currentX, currentY)?dungeon.sprites.cursorRed: dungeon.sprites.cursorYellow)
+                        } else{
+                            dungeon.cursorSprite.sprite.setFrame(!dungeon.isWalkableTile(currentX, currentY)?dungeon.sprites.cursorYellow: dungeon.sprites.cursorRed)
+                        }
                     dungeon.moveEntityTo(dungeon.cursorSprite, currentX, currentY)
                 }
             }
             if (this.cursors.down.isDown) {
                 if (currentY + 1 <= this.moveManager.validYCeil) {
                     currentY += 1
-                    dungeon.cursorSprite.sprite.setFrame(!dungeon.isWalkableTile(currentX, currentY)?dungeon.sprites.cursorRed: dungeon.sprites.cursorYellow)
+                    if(this.moving){
+                        dungeon.cursorSprite.sprite.setFrame(!dungeon.isWalkableTile(currentX, currentY)?dungeon.sprites.cursorRed: dungeon.sprites.cursorYellow)
+                        } else{
+                            dungeon.cursorSprite.sprite.setFrame(!dungeon.isWalkableTile(currentX, currentY)?dungeon.sprites.cursorYellow: dungeon.sprites.cursorRed)
+                        }
                     dungeon.moveEntityTo(dungeon.cursorSprite, currentX, currentY)
                 }
             }
         }
-
+        dungeon.scene.input.keyboard.resetKeys()
     }
-    confirmMove() {
+    confirm() {
         if(this.moving){
         if(dungeon.cursorSprite.sprite.frame === dungeon.sprites.cursorRed) { return }
-        let moveX = dungeon.cursorSprite.x
-        let moveY = dungeon.cursorSprite.y
-        dungeon.moveEntityTo(this, moveX, moveY)
-        dungeon.cursorSprite.sprite.hidden = true
-        dungeon.moveEntityTo(dungeon.cursorSprite, -100, -100)
-        let lengthMoved = this.moveManager.distanceMoved(moveX, moveY)
+        let lengthMoved = this.moveManager.distanceMoved(dungeon.cursorSprite.x, dungeon.cursorSprite.y)
         this.movePoints -= lengthMoved
+        dungeon.moveEntityTo(this, dungeon.cursorSprite.x, dungeon.cursorSprite.y)
         this.moving = false
         }
-        if(this.acting){}
+        if(this.acting){
+            if(dungeon.cursorSprite.sprite.frame === dungeon.sprites.cursorRed) { return }
+                let entity = dungeon.entityAtTile(dungeon.cursorSprite.x, dungeon.cursorSprite.y)
+                if(entity.type === 'foe'){
+                    dungeon.attackEntity(this,entity)
+                    this.actions -= 1
+                    this.acting = false
+                }
+        }
+        dungeon.scene.registry.set('pcActMove', [this.movePoints * 5, this.actions])
+        dungeon.cursorSprite.sprite.visible = false
     }
     cancel() {
-        if(this.moving){
-            dungeon.cursorSprite.sprite.hidden = true
-            dungeon.moveEntityTo(dungeon.cursorSprite, -100, -100)
-            this.moving = false
-        }
+        if(this.moving){ this.moving = false } 
+        if(this.acting) { this.acting = false }
+        dungeon.cursorSprite.sprite.visible = false
     }
     
     /**
@@ -153,7 +189,9 @@ export default class PlayerCharacter {
 
 
     over() {
-        //this.sprite.setFrame(this.tile)
+        if(this.movePoints === 0 && this.actions === 0 && !this.moving) {
+            this.sprite.setFrame(this.tile)
+        }
         return this.movePoints === 0 && this.actions === 0 && !this.moving
     }
 
@@ -165,4 +203,63 @@ export default class PlayerCharacter {
         console.log(this.name + ' was killed')
         dungeon.moveEntityTo(this, -100, -100)
     }
+
+    createUI() {
+        dungeon.scene.registry.set('pcData', [this.name, this.race, this.class])
+        dungeon.scene.registry.set('pcActMove', [this.movePoints * 5, this.actions])
+
+        /*
+        dungeon.scene.registry.set('pcClass', this.class)
+        dungeon.scene.registry.set('pcMoves', this.movePoints)
+        dungeon.scene.registry.set('pcActions', this.actions)
+        let accumulatedHeight = 0
+    */
+        /*
+        // Character sprite and name 
+        this.UIHeader = scene.add.text(
+            x + 20, 
+            y, 
+            this.name, 
+            { 
+                font: '16px Arial', 
+                color: '#cfc6b8' 
+            })
+    
+    
+        // Character stats
+        this.UIStatsText = scene.add.text(
+            x + 20, 
+            y + 20, 
+            `HP: ${this.hp}\nMP: ${this.movePoints}\nAP: ${this.actions}`, 
+            { 
+                font: '12px Arial', 
+                fill: '#cfc6b8' 
+            })
+    
+        accumulatedHeight += this.UIStatsText.height + this.UIsprite.height
+    
+        // Inventory screen
+        let itemsPerRow = 5
+        let rows = 2
+        this.UIitems = []
+    
+        for (let row = 1; row <= rows; row++) {
+            for (let cell = 1; cell <= itemsPerRow; cell++) {
+                let rx = x + (25 * cell)
+                let ry = y + 50 + (25 * row)
+                this.UIitems.push(
+                    scene.add.rectangle(rx, ry, 20, 20, 0xcfc6b8, 0.3).setOrigin(0)
+                )
+            }
+        }
+    
+        accumulatedHeight += 90
+    
+        // Separator
+        scene.add.line(x+5, y+120, 0, 10, 175, 10, 0xcfc6b8).setOrigin(0)
+    
+        return accumulatedHeight
+        */
+    }
 }
+

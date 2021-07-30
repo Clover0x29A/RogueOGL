@@ -1,15 +1,17 @@
 import Phaser from './lib/phaser.js'
-import Game from './scenes/Game.js'
-import Hud from './scenes/hud.js'
+import World from './scenes/world.js'
+import UI from './scenes/ui.js'
+import Title from './scenes/title.js'
 
 
 export default new Phaser.Game({
     type: Phaser.AUTO,
     width: 800,
     height: 600,
+    backgroundColor: '#000000',
     pixelArt: true,
     zoom: 1,
-    scene: Game,
+    scene: [World, UI],
     physics: {
         default: 'arcade',
         arcade: {
@@ -18,5 +20,5 @@ export default new Phaser.Game({
             },
         }
     },
-    fps: {forceSetTimeOut: true},
+    //fps: {forceSetTimeOut: true},
 })

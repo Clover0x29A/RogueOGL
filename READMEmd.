@@ -1,0 +1,42 @@
+So....yeah..........this is somewhat of a mess at this time.
+
+got the basic move cursor working the way I wanted to.
+YEA!
+
+
+ok in the manager folder is
+dm.js - Dungeon manager
+tm.js turn manager
+pm.js - player Character
+mm.js - move manager - used only in the player character
+monster.js - yup makes the one monster at this moment. Poor, poor, lonely monster.
+
+scenes folder
+of course holds the scenes.
+
+TODO in scenes is create sidebar for possible mouse interactions and
+so that I can actually see what I need to press to do stuff
+like 'm' for move and 'a' for action 'enter' for confirm 'esc' to cancel
+If you haven't figure out yet.  Yes those are the key binds at this time.
+Oh and 'd' for done with turn.....mainly since you can't attack yet and can only move
+making it never go to next turn for other items.
+
+
+Also want to make that sidebar give info as to what happens......
+Yup, that will all go in the scenes folder. along with the title scene, and maybe
+the 'you died' scene also.   You never know, I might put that one somewhere else.  Just
+to make you wonder why.
+
+Also if for some random reason anyone besides myself is actually reading this....EVER....
+HI!!!!!!
+
+/**
+ *             .'`'.'`'.
+ *         .''.`.  :  .`.''.
+ *         '.    '. .'    .'
+ *         .```  .' '.  ```.
+ *         '..',`  :  `,'..'
+ *             `-'`'-`))
+ *                    ((
+ *                     \|
+**/

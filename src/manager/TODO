@@ -11,10 +11,14 @@ so how do we change the turn manager?
 
 would like to update and see if we can use the delayedCall() to slow
 down the time for it.  Could I use the loop in the turn manager for turn
-to loop through the entities and on a player entitycreate a loop to to wait for
+to loop through the entities and on a player entity create a loop to to wait for
 user input?  then dalyedCall with a callback to their personal turn call based 
 off of what key is pressed.  or I could implement that in the turnmanager away 
 from the update()
+-----------------------------------------
+removed Update()  went to a timer and custom myUpdate() for calling the Turn 
+Manager.   Seems to have fixed the buggy keyDown issues.  Yup found out I didn't
+have to use Update() being that I'm not trying to get fps (turn based!)
 
 
 ************************************
@@ -24,3 +28,16 @@ I will still need to make a personalized spritesheet from the icon on the kenney
 sheet and add mine to that.  allowing me to call them since you can only load one 
 spritesheet to a map.  unless you use tiled and layers in tiled to load multiple 
 spritesheets.
+
+
+*********************************
+fix when monster kills player even though player is dead and gone. Monster keeps 
+killing dead player.  Funny but annoying
+
+*****************************
+Add the ability to have the monstr find the closest player and go attack them, instead
+of always only going after player 1
+
+
+****************
+find way to stop player from moving diagonally through walls, and instead must walk corridor

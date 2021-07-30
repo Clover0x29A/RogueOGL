@@ -10,12 +10,12 @@ import dungeon from './dm.js'
  
 export default class CursorSprite {
         constructor(){
-        this.x = -100
-        this.y = -100
+        this.x = dungeon.player.x
+        this.y = dungeon.player.y
         this.tile = dungeon.sprites.cursorYellow,
         this.moving = true
         this.sprite = dungeon.scene.add.sprite(this.x, this.y, 'tiles', this.tile)
-        this.sprite.hidden = true
+        this.sprite.visible = false
          this.sprite.setOrigin(0)
     }
 }

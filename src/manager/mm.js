@@ -24,14 +24,20 @@ export default class MoveManager {
         this.reset = true
     }
 
-    setupMoveInfo(player) {
+    /**
+     * I found this a safer way at the moment to deal
+     * with some oddities....I have changed a lot of
+     * pieces and might not needmuch if any of this anymore
+     */
+    setupMoveInfo(player, Move) {
         this.playerOriginX = player.x
         this.playerOriginY = player.y
         this.movePoints = player.movePoints
-        this.validXFloor = this.playerOriginX - this.movePoints
-        this.validXCeil = this.playerOriginX + this.movePoints
-        this.validYFloor = this.playerOriginY - this.movePoints
-        this.validYCeil = this.playerOriginY + this.movePoints
+        this.weaponRange =  player.weaponRange
+        this.validXFloor = Move? this.playerOriginX - this.movePoints : this.playerOriginX - this.weaponRange
+        this.validXCeil = Move? this.playerOriginX + this.movePoints : this.playerOriginX + this.weaponRange
+        this.validYFloor = Move? this.playerOriginY - this.movePoints : this.playerOriginY - this.weaponRange
+        this.validYCeil = Move? this.playerOriginY + this.movePoints : this.playerOriginY + this.weaponRange
         this.totalSq = this.validXCeil - this.validXFloor + 1
         this.reset = false
 
@@ -44,6 +50,7 @@ export default class MoveManager {
         return newY
     }
 
+    /** clear after completing move or what not **/
     clear(){
         this.playerOriginX  = 0
         this.playerOriginY  = 0

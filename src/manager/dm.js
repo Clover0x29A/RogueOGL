@@ -12,6 +12,11 @@ import room1 from '../maps/level.js'
 import turnManager from './tm.js'
 
     let dungeon = {
+    
+    playerInfo: [],
+    msgs: [],
+    
+
     sprites: {
         floor: 0,
         wall: 1,
@@ -132,8 +137,7 @@ import turnManager from './tm.js'
             let damage = attacker.attack()
             defender.hp -= damage
             
-            console.log(`${attacker.name} does ${damage} to ${defender.name}.`)
-            console.log(`${defender.name} has ${defender.hp} left.`)
+            this.log(`${attacker.name} does ${damage} to ${defender.name}.`)
 
             if(defender.hp <= 0) { this.removeEntity(defender)}
 
@@ -146,9 +150,12 @@ import turnManager from './tm.js'
         delay: attacker.tweens * 200,
         yoyo: true,
     })
-
     },
 
+    log(text){
+        this.msgs.unshift(text)
+        this.msgs = this.msgs.slice(0,8)
+    },
 }
 
 export default dungeon
