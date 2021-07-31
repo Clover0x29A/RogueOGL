@@ -28,7 +28,7 @@ export default class World extends Phaser.Scene {
             spacing: 1
         })
         //this.load.spritesheet('cursors', 'assets/cursors.png',{frameWidth: 16, frameHeight:16})
-
+        this.scene.pause('world')
     }
 /**
  * so yes there is two players and one monster
