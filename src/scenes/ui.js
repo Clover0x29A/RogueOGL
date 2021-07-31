@@ -13,12 +13,15 @@ export default class UI extends Phaser.Scene {
         this.x = 650
         this.y = 0
         this.newY = 15
+        // Inventory screen
+        this.itemsPerRow = 5
+        this.rows = 2
+        this.UIitems = []
 
     }
 
     preload() {
         this.load.image('hud', 'assets/hud.png')
-
     }
     create() {
         this.add.image(650, 0, 'hud').setOrigin(0)
@@ -47,6 +50,15 @@ export default class UI extends Phaser.Scene {
                     color: '#cfc6b8'
                 })
                this.newY += 20
+               for (let row = 1; row <= this.rows; row++) {
+                for (let cell = 1; cell <= this.itemsPerRow; cell++) {
+                    let rx = this.x + (25 * cell)
+                    let ry = this.y + 50 + (25 * row)
+                    this.UIitems.push(
+                        this.add.rectangle(rx, ry, 20, 20, 0xcfc6b8, 0.3).setOrigin(0)
+                    )
+                }
+            }
 
         this.log = this.add.text(this.x + 15, this.newY, '', {
             font: '12px Arial',
@@ -61,7 +73,6 @@ export default class UI extends Phaser.Scene {
     }
     update() {
         if (this.createdUI) {
-
             let text = dungeon.msgs.join(`\n`)
             this.log.setText(text)
         }

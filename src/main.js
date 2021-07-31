@@ -11,7 +11,7 @@ export default new Phaser.Game({
     backgroundColor: '#000000',
     pixelArt: true,
     zoom: 1,
-    scene: [World, UI],
+    scene: [Title],
     physics: {
         default: 'arcade',
         arcade: {

@@ -1,0 +1,9 @@
+@font-face {
+    font-family: glitch;
+    src: url("./assets/fonts/glitch.ttf") format('truetype');
+}
+
+@font-face {
+    font-family: bit8;
+    src: url("./assets/fonts/8bit.ttf") format('truetype');
+}
